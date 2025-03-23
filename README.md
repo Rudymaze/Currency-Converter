@@ -1,12 +1,32 @@
-# React + Vite
+OVERVIEW:
+The Currency Converter is a simple yet powerful tool designed to convert currencies in real-time. It supports a wide range of global currencies and provides up-to-date exchange rates. Whether you're a traveler, an online shopper, or a financial enthusiast, this tool can help you quickly and accurately convert between different currencies.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+FEATURES:
+Real-Time Exchange Rates: Fetches the latest exchange rates from a reliable API.
 
-Currently, two official plugins are available:
+Wide Range of Currencies: Supports over 150 global currencies.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+User-Friendly Interface: Simple and intuitive design for easy navigation.
 
-## Expanding the ESLint configuration
+Cross-Platform Compatibility: Works seamlessly on desktop and mobile devices.
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Historical Data: Option to view historical exchange rates (if supported by the API).
+
+USAGE:
+Select Currencies:
+
+Choose the currency you want to convert from in the "From" dropdown.
+
+Choose the currency you want to convert to in the "To" dropdown.
+
+Enter Amount:
+
+Input the amount you wish to convert in the "Amount" field.
+
+Convert:
+
+Click the "Convert" button to see the converted amount.
+
+View Results:
+
+The converted amount will be displayed below the conversion form.
