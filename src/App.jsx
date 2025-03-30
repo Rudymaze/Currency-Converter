@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./App.css";
+import CurrencySelector from "./components/CurrencySelector";
+import AmountInput from "./components/AmountInput";
+import ConversionResult from "./components/ConversionResults";
 
 // API key for fetching and updating the currency converter
 const API_KEY = "dc289905fcc47eed5bca6a9e";
 const MAIN_URL = `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`;
 
-function App() {
+const App = () => {
   const [currencies, setCurrencies] = useState([]);
   const [fromCurrency, setFromCurrency] = useState("USD");
+  const [toCurrency, setToCurrency] = useState("EUR");
+  const [amount, setAmount] = useState(1); // Initialize with 1
+  const [exchangeRates, setExchangeRates] = useState({});
+  const [convertedAmount, setConvertedAmount] = useState(null);
 
-  // using async and await in case there is any delay and also the try and catch so if there is any error it will be caught
   useEffect(() => {
     const fetchExchangeRates = async () => {
       try {
@@ -31,6 +36,7 @@ function App() {
       setConvertedAmount(result);
     }
   }, [amount, fromCurrency, toCurrency, exchangeRates]);
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -40,7 +46,7 @@ function App() {
         <div className="space-y-4">
           <AmountInput
             amount={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={(value) => setAmount(value)} // Update state directly
           />
           <CurrencySelector
             currencies={currencies}
@@ -59,6 +65,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;
