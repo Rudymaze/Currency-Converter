@@ -18,7 +18,7 @@ const App = () => {
   const [convertedAmount, setConvertedAmount] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Toggle dark mode and persist in localStorage
+  // clicking the toggle will activate the dark mode
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -30,7 +30,7 @@ const App = () => {
     }
   };
 
-  // Check for saved dark mode preference on initial load
+  // Checking the preference to be saved on the initial load
   useEffect(() => {
     const savedMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(savedMode);
