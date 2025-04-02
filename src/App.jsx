@@ -74,7 +74,7 @@ const App = () => {
             className={`text-2xl font-bold ${
               darkMode ? "text-white" : "text-gray-800"
             }`}>
-            Currency Converter
+            Currency Converter / Live Rates
           </h1>
           <DarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         </div>
