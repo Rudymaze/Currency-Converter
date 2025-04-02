@@ -17,8 +17,8 @@ const App = () => {
   const [exchangeRates, setExchangeRates] = useState({});
   const [convertedAmount, setConvertedAmount] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Toggle dark mode and persist in localStorage
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -30,7 +30,6 @@ const App = () => {
     }
   };
 
-  // Check for saved dark mode preference on initial load
   useEffect(() => {
     const savedMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(savedMode);
@@ -42,23 +41,26 @@ const App = () => {
   useEffect(() => {
     const fetchExchangeRates = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get(MAIN_URL);
         setExchangeRates(response.data.conversion_rates);
         setCurrencies(Object.keys(response.data.conversion_rates));
       } catch (error) {
         console.error("Error fetching exchange rates:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchExchangeRates();
   }, []);
 
-  useEffect(() => {
-    if (exchangeRates[toCurrency]) {
+  const handleConvert = () => {
+    if (exchangeRates[toCurrency] && amount > 0) {
       const result = (amount * exchangeRates[toCurrency]).toFixed(2);
       setConvertedAmount(result);
     }
-  }, [amount, fromCurrency, toCurrency, exchangeRates]);
+  };
 
   return (
     <div
@@ -96,8 +98,25 @@ const App = () => {
             onChange={(e) => setToCurrency(e.target.value)}
             darkMode={darkMode}
           />
+
+          <button
+            onClick={handleConvert}
+            disabled={isLoading}
+            className={`w-full py-2 px-4 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+              darkMode
+                ? "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500"
+                : "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500"
+            } ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
+            {isLoading ? "Converting..." : "CONVERT"}
+          </button>
+
           {convertedAmount !== null && (
-            <ConversionResult result={convertedAmount} darkMode={darkMode} />
+            <ConversionResult
+              result={convertedAmount}
+              fromCurrency={fromCurrency}
+              toCurrency={toCurrency}
+              darkMode={darkMode}
+            />
           )}
         </div>
       </div>
