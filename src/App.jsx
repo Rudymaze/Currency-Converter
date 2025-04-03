@@ -68,27 +68,6 @@ const App = () => {
     setInputError(false);
   };
 
-  // const handleConvert = () => {
-  //   if ((exchangeRates[toCurrency] && amount > 0 && !amount) || amount <= 0) {
-  //     const result = (amount * exchangeRates[toCurrency]).toFixed(2);
-  //     setConvertedAmount(result);
-  //     setInputError(true);
-  //     setShowAlert(true);
-  //     return;
-  //   }
-  //   setInputError(false);
-  // };
-  // logic to visually display the alert
-  // const handleConvert = () => {
-  //   if (!amount || amount <= 0) {
-  //     setInputError(true);
-  //     setShowAlert(true);
-  //     return;
-  //   }
-
-  //   setInputError(false);
-  // };
-
   return (
     <div
       className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${
