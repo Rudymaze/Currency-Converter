@@ -23,3 +23,4 @@ const AmountInput = ({ amount, onChange, darkMode, hasError }) => {
     </div>
   );
 };
+export default AmountInput;

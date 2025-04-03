@@ -18,6 +18,7 @@ const App = () => {
   const [convertedAmount, setConvertedAmount] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [inputError, setInputError] = useState(false);
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
@@ -55,11 +56,21 @@ const App = () => {
     fetchExchangeRates();
   }, []);
 
-  const handleConvert = () => {
+  const Convert = () => {
     if (exchangeRates[toCurrency] && amount > 0) {
       const result = (amount * exchangeRates[toCurrency]).toFixed(2);
       setConvertedAmount(result);
     }
+  };
+
+  const handleConvert = () => {
+    if (!amount || amount <= 0) {
+      setInputError(true);
+      setShowAlert(true);
+      return;
+    }
+
+    setInputError(false);
   };
 
   return (
