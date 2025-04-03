@@ -18,6 +18,7 @@ const App = () => {
   const [convertedAmount, setConvertedAmount] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [inputError, setInputError] = useState(false);
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
@@ -56,11 +57,37 @@ const App = () => {
   }, []);
 
   const handleConvert = () => {
-    if (exchangeRates[toCurrency] && amount > 0) {
-      const result = (amount * exchangeRates[toCurrency]).toFixed(2);
-      setConvertedAmount(result);
+    if (!exchangeRates[toCurrency] || amount <= 0 || isNaN(amount)) {
+      setInputError(true);
+      setShowAlert(true);
+      return;
     }
+
+    const result = (amount * exchangeRates[toCurrency]).toFixed(2);
+    setConvertedAmount(result);
+    setInputError(false);
   };
+
+  // const handleConvert = () => {
+  //   if ((exchangeRates[toCurrency] && amount > 0 && !amount) || amount <= 0) {
+  //     const result = (amount * exchangeRates[toCurrency]).toFixed(2);
+  //     setConvertedAmount(result);
+  //     setInputError(true);
+  //     setShowAlert(true);
+  //     return;
+  //   }
+  //   setInputError(false);
+  // };
+  // logic to visually display the alert
+  // const handleConvert = () => {
+  //   if (!amount || amount <= 0) {
+  //     setInputError(true);
+  //     setShowAlert(true);
+  //     return;
+  //   }
+
+  //   setInputError(false);
+  // };
 
   return (
     <div
@@ -83,8 +110,12 @@ const App = () => {
         <div className="space-y-4">
           <AmountInput
             amount={amount}
-            onChange={(value) => setAmount(value)}
+            onChange={(value) => {
+              setAmount(value);
+              setInputError(false); // Clear error when user types
+            }}
             darkMode={darkMode}
+            hasError={inputError}
           />
           <CurrencySelector
             currencies={currencies}
