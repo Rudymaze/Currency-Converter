@@ -62,7 +62,7 @@ const App = () => {
       setConvertedAmount(result);
     }
   };
-
+  // logic to visually display the alert on the input
   const handleConvert = () => {
     if (!amount || amount <= 0) {
       setInputError(true);
@@ -94,8 +94,12 @@ const App = () => {
         <div className="space-y-4">
           <AmountInput
             amount={amount}
-            onChange={(value) => setAmount(value)}
+            onChange={(value) => {
+              setAmount(value);
+              setInputError(false); // Clear error when user types
+            }}
             darkMode={darkMode}
+            hasError={inputError}
           />
           <CurrencySelector
             currencies={currencies}
