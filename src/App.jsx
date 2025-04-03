@@ -56,22 +56,38 @@ const App = () => {
     fetchExchangeRates();
   }, []);
 
-  const Convert = () => {
-    if (exchangeRates[toCurrency] && amount > 0) {
-      const result = (amount * exchangeRates[toCurrency]).toFixed(2);
-      setConvertedAmount(result);
-    }
-  };
-  // logic to visually display the alert on the input
   const handleConvert = () => {
-    if (!amount || amount <= 0) {
+    if (!exchangeRates[toCurrency] || amount <= 0 || isNaN(amount)) {
       setInputError(true);
       setShowAlert(true);
       return;
     }
 
+    const result = (amount * exchangeRates[toCurrency]).toFixed(2);
+    setConvertedAmount(result);
     setInputError(false);
   };
+
+  // const handleConvert = () => {
+  //   if ((exchangeRates[toCurrency] && amount > 0 && !amount) || amount <= 0) {
+  //     const result = (amount * exchangeRates[toCurrency]).toFixed(2);
+  //     setConvertedAmount(result);
+  //     setInputError(true);
+  //     setShowAlert(true);
+  //     return;
+  //   }
+  //   setInputError(false);
+  // };
+  // logic to visually display the alert
+  // const handleConvert = () => {
+  //   if (!amount || amount <= 0) {
+  //     setInputError(true);
+  //     setShowAlert(true);
+  //     return;
+  //   }
+
+  //   setInputError(false);
+  // };
 
   return (
     <div
