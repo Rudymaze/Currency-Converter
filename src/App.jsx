@@ -19,6 +19,48 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [inputError, setInputError] = useState(false);
+  const [favorites, setFavorites] = useState([]);
+  const [showFavorites, setShowFavorites] = useState(false);
+
+  // Load favorites from localStorage on mount
+  useEffect(() => {
+    const savedFavorites =
+      JSON.parse(localStorage.getItem("currencyFavorites")) || [];
+    setFavorites(savedFavorites);
+  }, []);
+
+  // Save favorites to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem("currencyFavorites", JSON.stringify(favorites));
+  }, [favorites]);
+
+  const addToFavorites = () => {
+    const newFavorite = {
+      from: fromCurrency,
+      to: toCurrency,
+      label: `${fromCurrency}/${toCurrency}`,
+    };
+
+    if (
+      !favorites.some(
+        (fav) => fav.from === fromCurrency && fav.to === toCurrency
+      )
+    ) {
+      setFavorites([...favorites, newFavorite]);
+    }
+  };
+
+  const removeFavorite = (index) => {
+    const updatedFavorites = [...favorites];
+    updatedFavorites.splice(index, 1);
+    setFavorites(updatedFavorites);
+  };
+
+  const applyFavorite = (favorite) => {
+    setFromCurrency(favorite.from);
+    setToCurrency(favorite.to);
+    setShowFavorites(false);
+  };
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;
@@ -68,27 +110,6 @@ const App = () => {
     setInputError(false);
   };
 
-  // const handleConvert = () => {
-  //   if ((exchangeRates[toCurrency] && amount > 0 && !amount) || amount <= 0) {
-  //     const result = (amount * exchangeRates[toCurrency]).toFixed(2);
-  //     setConvertedAmount(result);
-  //     setInputError(true);
-  //     setShowAlert(true);
-  //     return;
-  //   }
-  //   setInputError(false);
-  // };
-  // logic to visually display the alert
-  // const handleConvert = () => {
-  //   if (!amount || amount <= 0) {
-  //     setInputError(true);
-  //     setShowAlert(true);
-  //     return;
-  //   }
-
-  //   setInputError(false);
-  // };
-
   return (
     <div
       className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${
@@ -105,14 +126,105 @@ const App = () => {
             }`}>
             Currency Converter
           </h1>
-          <DarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+          <div className="flex items-center gap-2">
+            <DarkModeToggle
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+            />
+            <button
+              onClick={() => setShowFavorites(!showFavorites)}
+              className={`p-2 rounded-full ${
+                darkMode
+                  ? "text-white hover:bg-gray-700"
+                  : "text-gray-700 hover:bg-gray-200"
+              }`}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-        <div className="space-y-4">
+
+        {showFavorites && (
+          <div
+            className={`mb-4 p-4 rounded-lg ${
+              darkMode ? "bg-gray-700" : "bg-gray-100"
+            }`}>
+            <div className="flex justify-between items-center mb-2">
+              <h3
+                className={`font-medium ${
+                  darkMode ? "text-white" : "text-gray-800"
+                }`}>
+                Favorite Pairs
+              </h3>
+              <button
+                onClick={() => setShowFavorites(false)}
+                className={`p-1 rounded-full ${
+                  darkMode ? "hover:bg-gray-600" : "hover:bg-gray-200"
+                }`}>
+                ✕
+              </button>
+            </div>
+            {favorites.length === 0 ? (
+              <p
+                className={`text-sm ${
+                  darkMode ? "text-gray-300" : "text-gray-500"
+                }`}>
+                No favorites saved
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {favorites.map((fav, index) => (
+                  <li key={index} className="flex justify-between items-center">
+                    <button
+                      onClick={() => applyFavorite(fav)}
+                      className={`text-left flex-1 p-2 rounded ${
+                        darkMode ? "hover:bg-gray-600" : "hover:bg-gray-200"
+                      }`}>
+                      {fav.label}
+                    </button>
+                    <button
+                      onClick={() => removeFavorite(index)}
+                      className={`p-1 rounded-full ml-2 ${
+                        darkMode ? "hover:bg-gray-600" : "hover:bg-gray-200"
+                      }`}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
+        <div className="space-y-4 ">
           <AmountInput
             amount={amount}
             onChange={(value) => {
               setAmount(value);
-              setInputError(false); // Clear error when user types
+              setInputError(false);
             }}
             darkMode={darkMode}
             hasError={inputError}
@@ -131,13 +243,29 @@ const App = () => {
           />
 
           <button
-            onClick={handleConvert}
-            disabled={isLoading}
-            className={`w-full py-2 px-4 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+            onClick={addToFavorites}
+            disabled={!amount || amount <= 0}
+            className={`py-2 px-4 ml-[45px] rounded-md font-medium ${
               darkMode
-                ? "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500"
-                : "bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500"
-            } ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}>
+                ? "bg-purple-600 hover:bg-purple-700 text-white"
+                : "bg-purple-600 hover:bg-purple-700 text-white"
+            } ${
+              !amount || amount <= 0 ? "opacity-50 cursor-not-allowed" : ""
+            }`}>
+            Save as Favorite
+          </button>
+          <button
+            onClick={handleConvert}
+            disabled={isLoading || !amount || amount <= 0}
+            className={`py-2 px-4 ml-[45px] rounded-md font-medium ${
+              darkMode
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+            } ${
+              isLoading || !amount || amount <= 0
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}>
             {isLoading ? "Converting..." : "CONVERT"}
           </button>
 
