@@ -21,19 +21,21 @@ const App = () => {
   const [inputError, setInputError] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [isSwapping, setIsSwapping] = useState(false);
 
-  // Load favorites from localStorage on mount
+  // Load favorites from localStorage
   useEffect(() => {
     const savedFavorites =
       JSON.parse(localStorage.getItem("currencyFavorites")) || [];
     setFavorites(savedFavorites);
   }, []);
 
-  // Save favorites to localStorage when they change
+  // Save favorites to localStorage when they change it stil will be saved in the local storage
   useEffect(() => {
     localStorage.setItem("currencyFavorites", JSON.stringify(favorites));
   }, [favorites]);
 
+  // choosing a favorite pair to be stored in the localStorage, that will be used
   const addToFavorites = () => {
     const newFavorite = {
       from: fromCurrency,
@@ -62,6 +64,7 @@ const App = () => {
     setShowFavorites(false);
   };
 
+  // DarkMode logic, to impliment darkmode for user convience
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -81,6 +84,7 @@ const App = () => {
     }
   }, []);
 
+  // fetching the ExchangeRate API, that will be used to get all the currencies
   useEffect(() => {
     const fetchExchangeRates = async () => {
       try {
@@ -229,18 +233,53 @@ const App = () => {
             darkMode={darkMode}
             hasError={inputError}
           />
-          <CurrencySelector
-            currencies={currencies}
-            selectedCurrency={fromCurrency}
-            onChange={(e) => setFromCurrency(e.target.value)}
-            darkMode={darkMode}
-          />
-          <CurrencySelector
-            currencies={currencies}
-            selectedCurrency={toCurrency}
-            onChange={(e) => setToCurrency(e.target.value)}
-            darkMode={darkMode}
-          />
+          <div className="relative">
+            <CurrencySelector
+              currencies={currencies}
+              selectedCurrency={fromCurrency}
+              onChange={(e) => setFromCurrency(e.target.value)}
+              darkMode={darkMode}
+              label="From"
+            />
+
+            {/* Swap button positioned between the selectors */}
+            <div className="flex items-center justify-center my-2">
+              <button
+                onClick={() => {
+                  setFromCurrency(toCurrency);
+                  setToCurrency(fromCurrency);
+                  setConvertedAmount(null);
+                }}
+                className={`p-2 rounded-full border mt-5 ${
+                  darkMode
+                    ? "border-gray-600 text-white hover:bg-gray-700"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
+                }`}
+                aria-label="Swap currencies">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <CurrencySelector
+              currencies={currencies}
+              selectedCurrency={toCurrency}
+              onChange={(e) => setToCurrency(e.target.value)}
+              darkMode={darkMode}
+              label="To"
+            />
+          </div>
 
           <button
             onClick={addToFavorites}
