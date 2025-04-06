@@ -30,3 +30,16 @@
     transform: rotate(360deg);
   }
 }
+
+@keyframes spinSwap {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+.swap-animate {
+  animation: spinSwap 0.3s ease-in-out;
+}
